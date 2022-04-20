@@ -3,6 +3,6 @@ value2
 value3
 value4
 
-pull1ADD test test
+pull1ADD test test1
 
-pull2ADD
+pull2ADD test
