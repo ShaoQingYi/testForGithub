@@ -1,0 +1,44 @@
+
+<div>
+    <label for="startDateForPie">选择开始日期:</label>
+    <input type="date" id="startDateForPie" [(ngModel)]="startDateForPie" (change)="onDateRangeChangeForPie()">
+  </div>
+  
+  <div>
+    <label for="endDateForPie">选择结束日期:</label>
+    <input type="date" id="endDateForPie" [(ngModel)]="endDateForPie" (change)="onDateRangeChangeForPie()">
+  </div>
+
+<div style="display: block;" style="width: 300px; height: 300px;">
+    <canvas baseChart
+            [data]="pieChartData"
+            [labels]="pieChartLabels"
+            [chartType]="pieChartType"
+            [options]="pieChartOptions">
+    </canvas>
+</div>
+
+<div>
+    <label for="startDate">选择日期:</label>
+    <input type="date" id="startDate" [(ngModel)]="startDate" (change)="onDateChange()">
+</div>
+
+<div>
+    <label for="dateRange">表示日期期间:</label>
+    <input type="number" id="dateRange" [(ngModel)]="dateRange" (change)="onDateRangeChange()">
+</div>
+
+<div style="display: block;" style="width: 300px; height: 300px;">
+    <canvas id="myChart" width="400" height="400"></canvas>
+</div>
+
+<div>
+    <label for="monthRange">表示月份期间:</label>
+    <input type="number" id="monthRange" [(ngModel)]="monthRange" (change)="onMonthRangeChange()">
+</div>
+
+<div style="display: block;" style="width: 300px; height: 300px;">
+    <canvas id="detailChart2" width="400" height="400"></canvas>
+</div>
+  
+  
