@@ -1,0 +1,101 @@
+<!-- <router-outlet></router-outlet> -->
+<div class="label-group">
+  <a class="btn btn-primary" [routerLink]="['/dashboard']">返回主菜单</a>
+
+  &nbsp;
+
+  <a class="btn btn-success" [routerLink]="['/moneyDetail']">新增</a>
+
+  &nbsp;&nbsp;
+
+  <label>m1:</label>&nbsp;
+  <label style="color: #ff0000;">{{m1}}</label>
+
+  &nbsp;&nbsp;
+
+  <label>m2:</label>&nbsp;
+  <label style="color: #ff0000;">{{m2}}</label>
+
+  &nbsp;&nbsp;
+
+  <label>m3:</label>&nbsp;
+  <label style="color: #187505;">{{m3}}</label>
+
+  &nbsp;&nbsp;
+
+  <label>m4:</label>&nbsp;
+  <label style="color: #187505;">{{m4}}</label>
+</div>
+
+<div *ngIf="msg">
+  <br><br>
+  {{msg}}
+  <br><br>
+</div>
+
+<br>
+
+<label for="selectedDate">查看指定日期收支状况</label>
+<div class="input-group">
+  <input type="date" class="form-control" id="selectedDate"
+      [(ngModel)]="selectedDate" name="selectedDate"
+      (change)="filterData()"
+      >
+
+  <button type="button" class="btn btn-default"
+  (click)="onClear()">显示所有数据</button>
+</div>
+
+<table class="table table-bordered table-condensed">
+  <thead class="thead-light">
+    <tr>
+      <th>账单番号</th>
+      <th>入账/出账</th>
+      <th>账单日期</th>
+      <th>花费名称</th>
+      <th>花费金额</th>
+      <th>花费种类</th>
+      <th>支付方法</th>
+      <th>当日累计对象</th>
+      <th>收入名称</th>
+      <th>收入金额</th>
+      <th>收入种类</th>
+      <th>memo</th>
+      <th>记录日期</th>
+      <th>更改日期</th>
+      <th>记录人</th>
+      <th>修改/删除</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let moneyDetail of moneyDetails">
+      <td>{{moneyDetail.detail_No}}</td>
+      <td>
+        <span *ngIf="moneyDetail.inOrOut">支出</span>
+        <span *ngIf="!moneyDetail.inOrOut">收入</span>
+      </td>
+      <td>{{moneyDetail.writeTime}}</td>
+      <td>{{moneyDetail.costName}}</td>
+      <td>{{moneyDetail.costMoney}}</td>
+      <td>{{moneyDetail.costType}}</td>
+      <td>{{moneyDetail.payMethod}}</td>
+      <td>
+        <span *ngIf="moneyDetail.isDifferenceObject">对象</span>
+        <span *ngIf="!moneyDetail.isDifferenceObject">对象外</span>
+      </td>
+      <td>{{moneyDetail.incomeName}}</td>
+      <td>{{moneyDetail.incomeMoney}}</td>
+      <td>{{moneyDetail.incomeType}}</td>
+      <td>{{moneyDetail.memo}}</td>
+      <td>{{moneyDetail.regist_date}}</td>
+      <td>{{moneyDetail.update_date}}</td>
+      <td>{{moneyDetail.regist_user}}</td>
+
+      <td>
+        <a [routerLink]="['/moneyDetailedit', moneyDetail.detail_No]">修改</a>
+         &nbsp;&nbsp;
+         <button (click)="onDelete(moneyDetail.detail_No)">删除</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

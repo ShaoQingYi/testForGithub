@@ -1,0 +1,34 @@
+<a class="btn btn-primary" [routerLink]="['/dashboard']">返回主菜单</a>
+
+<br>
+
+<div>
+    <h1>Excel自动更新</h1>
+
+    <form (ngSubmit)="onSubmit()"  #excelBatchForm="ngForm">
+        <label for="writeTime">自动计算日期</label>
+        
+        <input type="date" class="form-control" id="writeTime"
+            required
+            [(ngModel)]="writeTimeForSpringboot" name="writeTime" [max]="maxDate" [min]="minDate"
+            #writeTime="ngModel">
+        <div [hidden]="writeTime.valid || writeTime.pristine"
+            class="alert alert-danger">
+            自动计算日期 is required
+        </div>
+
+        <br>
+
+        <button type="button" class="btn btn-default" 
+            (click)="onClear(excelBatchForm)">清除</button>
+        
+        <button type="submit" class="btn btn-success"
+            [disabled]="!excelBatchForm.form.valid">实行</button>
+    </form>
+
+    <label for="msg">自动更新Log
+        <textarea class="form-control"  style="height: 300px; width: 350px;" disabled="false" id="msg"
+            [(ngModel)]="msg" name="msg"></textarea>
+        <!-- <textarea class="form-control" style="height: 300px; width: 400px;"></textarea> -->
+    </label>
+</div>

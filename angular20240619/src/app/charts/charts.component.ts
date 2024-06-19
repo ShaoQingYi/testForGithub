@@ -73,6 +73,9 @@ export class ChartsComponent {
   public pieChartLabels: Label[] = [];
   public pieChartData: number[] = [];
   public pieChartType: ChartType = 'pie';
+  public pieChartColors = [{
+    backgroundColor: this.chartDataService.generateColors(Object.values(this.categoryCosts).length),
+  }];
 
   // public pieChartLabels: Label[] = [['Series A'], ['Series B']];
   // public pieChartData: SingleDataSet = [300, 500,600];
@@ -149,6 +152,12 @@ export class ChartsComponent {
   updateCategoryCosts() {
     // this.lableDetailForChartPie = this.chartDataService.get7DaysFrom(this.startDate, this.dateRange);
     this.categoryCosts = this.chartDataService.calculateCategoryCosts(this.moneyDetails, this.startDateForPie,this.endDateForPie);
+   
+    // 背景色
+    this.pieChartColors = [{
+      backgroundColor: this.chartDataService.generateColors(Object.values(this.categoryCosts).length),
+    }];
+   
     this.updatePieChart();
   }
   
@@ -182,7 +191,7 @@ export class ChartsComponent {
             label: '指定日期内每日花销合计',
             // data: [30, 45, 28, 80, 99, 43, 70],
             data: this.dataDayForChart,
-            borderColor: 'rgba(75, 192, 192, 1)',
+            borderColor: this.chartDataService.generateColors(this.dataDayForChart.length),
             fill: false
           }
           // ,
@@ -240,40 +249,35 @@ export class ChartsComponent {
             label: '12月内花销合计1',
             // data: [1200, 500, 300, 200, 400],
             data: this.dataMonthForChart,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)'
-            ],
+            backgroundColor: this.chartDataService.generateColors(this.dataMonthForChart.length),
+            // borderColor: [
+            //   'rgba(255, 99, 132, 1)',
+            //   'rgba(54, 162, 235, 1)',
+            //   'rgba(255, 206, 86, 1)',
+            //   'rgba(75, 192, 192, 1)',
+            //   'rgba(153, 102, 255, 1)'
+            // ],
             borderWidth: 1
           },
           {
             label: '12月内花销合计2',
             // data: [1200, 500, 300, 200, 400],
             data: this.dataMonthForChart,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)'
-            ],
+            backgroundColor: this.chartDataService.generateColors(this.dataMonthForChart.length),
+            // backgroundColor: [
+            //   'rgba(255, 99, 132, 0.2)',
+            //   'rgba(54, 162, 235, 0.2)',
+            //   'rgba(255, 206, 86, 0.2)',
+            //   'rgba(75, 192, 192, 0.2)',
+            //   'rgba(153, 102, 255, 0.2)'
+            // ],
+            // borderColor: [
+            //   'rgba(255, 99, 132, 1)',
+            //   'rgba(54, 162, 235, 1)',
+            //   'rgba(255, 206, 86, 1)',
+            //   'rgba(75, 192, 192, 1)',
+            //   'rgba(153, 102, 255, 1)'
+            // ],
             borderWidth: 1
           }
         ]

@@ -1,0 +1,198 @@
+<a class="btn btn-primary" [routerLink]="['/dashboard']">返回主菜单</a>
+
+&nbsp;
+
+<a class="btn btn-success" [routerLink]="['/moneyDetailInfo']">详细</a>
+
+<div *ngIf="msg">
+    <br><br>
+    {{msg}}
+</div>
+
+<div [hidden]="submitted">
+    <h1>收支记录</h1>
+    <form (ngSubmit)="onSubmit()" #moneyDetailForm="ngForm">
+    
+        <label for="Out">支出</label>
+        <input id="Out" type="radio"
+        [(ngModel)]="selectedOptionInorOut" value="Out" name="inOrOut"
+        (ngModelChange)="toggleElements()">
+
+        &nbsp;
+
+        <label for="in">收入</label>
+        <input id="in" type="radio"
+            [(ngModel)]="selectedOptionInorOut" value="In" name="inOrOut"
+            (ngModelChange)="toggleElements()">
+
+        <br>
+
+        <label for="writeTime">收支日期</label>
+        <input type="date" class="form-control" id="writeTime"
+            required
+            [(ngModel)]="moneyDetail.writeTime" name="writeTime"
+            #writeTime="ngModel">
+        <div [hidden]="writeTime.valid || writeTime.pristine"
+            class="alert alert-danger">
+            writeTime is required
+        </div>
+
+        <div *ngIf="isOut">
+          <label for="costName">支出详细</label>
+          <input type="text" class="form-control" id="costName"
+              required
+              [(ngModel)]="moneyDetail.costName" name="costName"
+              #costName="ngModel">
+          <div [hidden]="costName.valid || costName.pristine"
+              class="alert alert-danger">
+              costName is required
+          </div>
+
+          <label for="costMoney">支出金额</label>
+          <input type="number" class="form-control" id="costMoney"
+              required
+              [(ngModel)]="moneyDetail.costMoney" name="costMoney"
+              #costMoney="ngModel">
+          <div [hidden]="costMoney.valid || costMoney.pristine"
+              class="alert alert-danger">
+              costMoney is required
+          </div>
+          
+          <label for="costType">支出类型</label>
+          <select class="form-control"  id="costType"
+                  required
+                  [(ngModel)]="moneyDetail.costType" name="costType">
+             <option *ngFor="let costType of costTypes" 
+                    [value]="costType.code">{{costType.value}}</option>
+          </select>
+
+          <label for="payMethod">支出方式</label>
+          <select class="form-control"  id="payMethod"
+                  required
+                  [(ngModel)]="moneyDetail.payMethod" name="payMethod">
+             <option *ngFor="let payMethod of payMethods" 
+                    [value]="payMethod.code">{{payMethod.value}}</option>
+          </select>
+
+          <label for="isDifferenceObject">累加对象
+            <input type="checkbox" class="form-control" id="isDifferenceObject"
+              [(ngModel)]="moneyDetail.isDifferenceObject" name="isDifferenceObject">
+          </label>     
+        </div>
+
+        <div *ngIf="!isOut">
+            <label for="incomeName">收入详细</label>
+            <input type="text" class="form-control" id="incomeName"
+                required
+                [(ngModel)]="moneyDetail.incomeName" name="incomeName"
+                #incomeName="ngModel">
+            <div [hidden]="incomeName.valid || incomeName.pristine"
+                class="alert alert-danger">
+                incomeName is required
+            </div>
+  
+            <label for="incomeMoney">收入金额</label>
+            <input type="number" class="form-control" id="incomeMoney"
+                required
+                [(ngModel)]="moneyDetail.incomeMoney" name="incomeMoney"
+                #incomeMoney="ngModel">
+            <div [hidden]="incomeMoney.valid || incomeMoney.pristine"
+                class="alert alert-danger">
+                incomeMoney is required
+            </div>
+            
+            <label for="incomeType">收入种类</label>
+            <select class="form-control"  id="incomeType"
+                    required
+                    [(ngModel)]="moneyDetail.incomeType" name="incomeType">
+               <option *ngFor="let incomeType of incomeTypes" 
+                      [value]="incomeType.code">{{incomeType.value}}</option>
+            </select>
+        </div>
+  
+        <br>
+
+        <label for="memo">memo
+            <textarea class="form-control" id="memo"
+                [(ngModel)]="moneyDetail.memo" name="memo"></textarea>
+        </label>
+
+        <br>
+
+        <button type="button" class="btn btn-default" 
+            (click)="onClear(moneyDetailForm)">清除</button>
+        
+        
+        <button type="submit" class="btn btn-success"
+        [disabled]="!moneyDetailForm.form.valid">新增</button>
+    </form>
+</div>
+
+<div [hidden]="!submitted">
+    <h2>You submitted the following:</h2>
+
+    <div *ngIf="isOut">
+        <div class="row">
+            <div class="col-xs-3">inOrOut</div>
+            <div class="col-xs-9">{{ selectedOptionInorOut }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">writeTime</div>
+            <div class="col-xs-9">{{ moneyDetail.writeTime }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">costName</div>
+            <div class="col-xs-9">{{ moneyDetail.costName }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">costMoney</div>
+            <div class="col-xs-9">{{ moneyDetail.costMoney }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">costType</div>
+            <div class="col-xs-9">{{ costTypeForView }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">payMethod</div>
+            <div class="col-xs-9">{{ payMethodForView }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">isDifferenceObject</div>
+            <div class="col-xs-9">{{ moneyDetail.isDifferenceObject }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">memo</div>
+            <div class="col-xs-9">{{ moneyDetail.memo }}</div>
+        </div>
+    </div>
+
+    <div *ngIf="!isOut">
+        <div class="row">
+            <div class="col-xs-3">inOrOut</div>
+            <div class="col-xs-9">{{ selectedOptionInorOut }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">writeTime</div>
+            <div class="col-xs-9">{{ moneyDetail.writeTime }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">incomeName</div>
+            <div class="col-xs-9">{{ moneyDetail.incomeName }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">incomeMoney</div>
+            <div class="col-xs-9">{{ moneyDetail.incomeMoney }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">incomeType</div>
+            <div class="col-xs-9">{{ incomeTypeForView }}</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3">memo</div>
+            <div class="col-xs-9">{{ moneyDetail.memo }}</div>
+        </div>
+    </div>
+
+    <br>
+    <button type="button" class="btn btn-primary" (click)="submitted=false">Edit</button>
+</div>
