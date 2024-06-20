@@ -52,7 +52,9 @@ export class ChartDataService {
     const monthArray: string[] = [];
 
     for (let i = 0; i < months; i++) {
-      const currentDate = new Date(date);
+      // 0620
+      const currentDate = new Date(date.getFullYear(),date.getMonth(),1);
+      // 0620
       currentDate.setMonth(date.getMonth() - i);
       const formattedDate = this.formatMonth(currentDate);
       monthArray.push(formattedDate);
