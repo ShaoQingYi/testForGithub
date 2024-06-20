@@ -5,7 +5,6 @@ import { Label, SingleDataSet } from 'ng2-charts';
 
 import { ChartDataService } from '../chart-data.service';
 import { MoneyDetailEntity } from '../MoneyDetailEntity';
-import { MoneyDetailsFromSpringboot } from '../MoneyDetailsFromSpringboot';
 
 @Component({
   selector: 'app-charts',
@@ -16,7 +15,7 @@ export class ChartsComponent {
 
   constructor(private chartDataService: ChartDataService) { }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     
     this.getMoneyDetails();
 
@@ -42,10 +41,7 @@ export class ChartsComponent {
     // this.createChart2();
   }
 
-  excludeDomesticTransfer: boolean = false;
-
-  moneyDetails : MoneyDetailsFromSpringboot[] = [];
-  moneyDetailsBk : MoneyDetailsFromSpringboot[] = [];
+  moneyDetails : MoneyDetailEntity[] = [];
   totalCostByDate: { [key: string]: number } = {};
   
   chart: any;
@@ -53,10 +49,26 @@ export class ChartsComponent {
   // dataDetailForChartPie: any;
 
   lableDayForChart: any[] = [];
+  // dataDayForChart: number[] = [];
+
+  // 0620
   dataDayForChart: number[] = [];
+  // 0620
+
+  // 0620
+  dataDayForChart_j: number[] = [];
+  dataDayForChart_jcb: number[] = [];
+  dataDayForChart_c: number[] = [];
+  // 0620
 
   lableMonthForChart: any[] = [];
   dataMonthForChart: number[] = [];
+
+  // 0620
+  dataMonthForChart_j: number[] = [];
+  dataMonthForChart_jcb: number[] = [];
+  dataMonthForChart_c: number[] = [];
+  // 0620
 
   startDate: string = '';
   dateRange: number = 7;
@@ -78,37 +90,10 @@ export class ChartsComponent {
   // public pieChartData: SingleDataSet = [300, 500,600];
   // public pieChartType: ChartType = 'pie';
 
-  onExcludeDomesticTransferChange() {
-    if (this.excludeDomesticTransfer) {
-      this.moneyDetails = this.moneyDetails.filter(detail => detail.costType !== '国内送金');
-    } else{
-      this.moneyDetails = this.moneyDetailsBk;
-    }
-
-    this.updateCategoryCosts();
-
-    this.updateDailyCosts();
-    this.updateMonthlyCosts();
-  }
-
   // 取得每日花费详细
   getMoneyDetails(): void {
-    // this.chartDataService.getMoneyDetails()
-    //   .subscribe(moneyDetails => this.moneyDetails = moneyDetails);
-
     this.chartDataService.getMoneyDetails()
-    .subscribe((MoneyDetails: any) =>  {
-        this.moneyDetails = MoneyDetails;
-        this.moneyDetailsBk = MoneyDetails;
-
-        this.updateCategoryCosts();
-
-        this.updateDailyCosts();
-        this.updateMonthlyCosts();
-      },
-      error => {
-        // this.error = error;
-      });
+      .subscribe(moneyDetails => this.moneyDetails = moneyDetails);
   }
 
   // // 计算每天花费总和
@@ -160,13 +145,25 @@ export class ChartsComponent {
 
   updateDailyCosts() {
     this.lableDayForChart = this.chartDataService.get7DaysFrom(this.startDate,this.dateRange);
-    this.dataDayForChart = this.chartDataService.calculateDailyCosts(this.moneyDetails,this.lableDayForChart);
+    // this.dataDayForChart = this.chartDataService.calculateDailyCosts(this.moneyDetails,this.lableDayForChart);
+    
+    // 0620
+    this.dataDayForChart_j = this.chartDataService.calculateDailyCostsForJ(this.moneyDetails,this.lableDayForChart);
+    this.dataDayForChart_jcb = this.chartDataService.calculateDailyCostsForJCB(this.moneyDetails,this.lableDayForChart);
+    this.dataDayForChart_c = this.chartDataService.calculateDailyCostsForC(this.moneyDetails,this.lableDayForChart);
+    // 0620
+
     this.createChart();
   }
 
   updateMonthlyCosts() {
     this.lableMonthForChart = this.chartDataService.get12MonthsFrom(this.startDate,this.monthRange);
-    this.dataMonthForChart = this.chartDataService.calculateMonthlyCosts(this.moneyDetails,this.lableMonthForChart);
+    // this.dataMonthForChart = this.chartDataService.calculateMonthlyCosts(this.moneyDetails,this.lableMonthForChart);
+    
+    this.dataMonthForChart_j = this.chartDataService.calculateMonthlyCostsForJ(this.moneyDetails,this.lableMonthForChart);
+    this.dataMonthForChart_jcb = this.chartDataService.calculateMonthlyCostsForJCB(this.moneyDetails,this.lableMonthForChart);
+    this.dataMonthForChart_c = this.chartDataService.calculateMonthlyCostsForC(this.moneyDetails,this.lableMonthForChart);
+    
     this.createChart2();
   }
 
@@ -179,10 +176,24 @@ export class ChartsComponent {
         labels: this.lableDayForChart,
         datasets: [
           {
-            label: '指定日期内每日花销合计',
+            label: '日别j现金花销合计',
             // data: [30, 45, 28, 80, 99, 43, 70],
-            data: this.dataDayForChart,
-            borderColor: 'rgba(75, 192, 192, 1)',
+            data: this.dataDayForChart_j,
+            borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+          },
+          {
+            label: '日别jcb花销合计',
+            // data: [30, 45, 28, 80, 99, 43, 70],
+            data: this.dataDayForChart_jcb,
+            borderColor: 'rgba(255, 206, 86, 1)',
+            fill: false
+          },
+          {
+            label: '日别c现金花销合计',
+            // data: [30, 45, 28, 80, 99, 43, 70],
+            data: this.dataDayForChart_c,
+            borderColor: 'rgba(153, 102, 255, 1)',
             fill: false
           }
           // ,
@@ -202,6 +213,19 @@ export class ChartsComponent {
       },
       options: {
         responsive: true,
+        plugins: {
+          tooltip: {
+            enabled: false // 禁用 tooltips
+          },
+          zoom: {
+            pan: {
+              enabled: false, // 禁用平移
+            },
+            zoom: {
+              enabled: false // 禁用缩放
+            }
+          }
+        },
         scales: {
           xAxes: [{
             type: 'category',
@@ -237,49 +261,46 @@ export class ChartsComponent {
         labels: this.lableMonthForChart,
         datasets: [
           {
-            label: '12月内花销合计1',
+            label: '月别j现金花销合计',
             // data: [1200, 500, 300, 200, 400],
-            data: this.dataMonthForChart,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)'
-            ],
+            data: this.dataMonthForChart_j,
+            backgroundColor:'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1
           },
           {
-            label: '12月内花销合计2',
+            label: '月别jcb花销合计',
             // data: [1200, 500, 300, 200, 400],
-            data: this.dataMonthForChart,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)'
-            ],
+            data: this.dataMonthForChart_jcb,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          },
+          {
+            label: '月别c现金花销合计',
+            // data: [1200, 500, 300, 200, 400],
+            data: this.dataMonthForChart_c,
+            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+            borderColor: 'rgba(255, 206, 86, 1)',
             borderWidth: 1
           }
         ]
       },
       options: {
         responsive: true,
+        plugins: {
+          tooltip: {
+            enabled: false // 禁用 tooltips
+          },
+          zoom: {
+            pan: {
+              enabled: false, // 禁用平移
+            },
+            zoom: {
+              enabled: false // 禁用缩放
+            }
+          }
+        },
         scales: {
           xAxes: [{
             type: 'category',

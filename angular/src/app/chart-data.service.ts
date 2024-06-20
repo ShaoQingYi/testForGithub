@@ -66,23 +66,106 @@ export class ChartDataService {
     return `${year}-${month}`;
   }
 
-  // 根据传入的日期数组，算出对应日期的花费累计
-  calculateDailyCosts(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
+  // 根据传入的日期数组，算出对应日期的花费累计 J
+  calculateDailyCostsForJ(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
     return dateArray.map(date => {
       return transactions
-        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut)
+        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == 'j现金')
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
 
-  // 根据传入的日期数组，算出对应月份的花费累计
-  calculateMonthlyCosts(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
-    return monthArray.map(month => {
+   // 根据传入的日期数组，算出对应日期的花费累计 JCB
+   calculateDailyCostsForJCB(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
+    return dateArray.map(date => {
       return transactions
-        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut)
+        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == 'jcb')
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
+
+   // 根据传入的日期数组，算出对应日期的花费累计 C
+   calculateDailyCostsForC(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
+    return dateArray.map(date => {
+      return transactions
+        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == 'c现金')
+        .reduce((sum, transaction) => sum + transaction.costMoney, 0);
+    });
+  }
+
+  // 根据传入的日期数组，算出对应日期的花费累计
+  // calculateDailyCosts2(transactions: MoneyDetailEntity[], dateArray: string[]): { [key: string]: number[] } {
+  //   // 初始化存储每种种别的花费数组
+  //   const categoryCosts: { [key: string]: number[] } = {};
+  
+  //   // 遍历日期数组
+  //   dateArray.forEach(date => {
+  //     // 遍历每个 transaction
+  //     transactions.forEach(transaction => {
+  //       // 检查日期和种别是否匹配
+  //       if (transaction.writeTime === date && !transaction.inOrOut) {
+  //         // 如果种别在结果集中不存在，创建一个新的数组
+  //         if (!categoryCosts[transaction.payMethod]) {
+  //           if(transaction.payMethod=='j现金'){
+  //             categoryCosts['j现金'] = [];
+  //             categoryCosts['j现金'].push(0);
+  //           }else if (transaction.payMethod=='jcb'){
+  //             categoryCosts['jcb'] = [];
+  //             categoryCosts['jcb'].push(0);
+  //           }else {
+  //             categoryCosts['c现金'] = [];
+  //             categoryCosts['c现金'].push(0);
+  //           }
+  //         }
+  //         // 将当前 transaction 的 costMoney 添加到对应种别的花费数组中
+  //         // categoryCosts[transaction.payMethod].push(transaction.costMoney);
+
+  //         if(transaction.payMethod=='j现金'){
+  //           // categoryCosts['j现金'] = [];
+  //           categoryCosts['j现金'][.push(transaction.costMoney)];
+  //         }else if (transaction.payMethod=='jcb'){
+  //           // categoryCosts['jcb'] = [];
+  //           categoryCosts['jcb'].push(transaction.costMoney);
+  //         }else {
+  //           // categoryCosts['c现金'] = [];
+  //           categoryCosts['c现金'].push(transaction.costMoney);
+  //         }
+  //       }
+  //     });
+  //   });
+  
+  //   return categoryCosts;
+  // }
+  
+
+  // 根据传入的日期数组，算出对应月份的花费累计 J
+  calculateMonthlyCostsForJ(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
+    return monthArray.map(month => {
+      return transactions
+        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == 'j现金')
+        .reduce((sum, transaction) => sum + transaction.costMoney, 0);
+    });
+  }
+
+  // 根据传入的日期数组，算出对应月份的花费累计 JCB
+  calculateMonthlyCostsForJCB(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
+    return monthArray.map(month => {
+      return transactions
+        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == 'jcb')
+        .reduce((sum, transaction) => sum + transaction.costMoney, 0);
+    });
+  }
+
+  // 根据传入的日期数组，算出对应月份的花费累计 C
+  calculateMonthlyCostsForC(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
+    return monthArray.map(month => {
+      return transactions
+        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == 'c现金')
+        .reduce((sum, transaction) => sum + transaction.costMoney, 0);
+    });
+  }
+
+  
 
   // calculateCategoryCosts(transactions: MoneyDetailEntity[], dateArray: string[]): { [key: string]: number } {
   //   const categoryCosts: { [key: string]: number } = {};
