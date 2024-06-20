@@ -198,7 +198,17 @@ export class ChartDataService {
         if (!categoryCosts[transaction.costType]) {
           categoryCosts[transaction.costType] = 0;
         }
-        categoryCosts[transaction.costType] += transaction.costMoney;
+
+        // 0620
+        // 如果是国内支付方式的场合，支付金额*20
+        if (transaction.payMethod != 'j现金' && transaction.payMethod != 'jcb') {
+          categoryCosts[transaction.costType] += transaction.costMoney * 20;
+        } else {
+          categoryCosts[transaction.costType] += transaction.costMoney;
+        }
+        // 0620
+
+        // categoryCosts[transaction.costType] += transaction.costMoney;
       });
 
     return categoryCosts;

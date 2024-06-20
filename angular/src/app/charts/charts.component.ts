@@ -80,11 +80,23 @@ export class ChartsComponent {
   categoryCosts: { [key: string]: number } = {};
   
   public pieChartOptions: ChartOptions = {
-    responsive: true,
+    responsive: true, // 禁用响应式
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right', // 设置图例显示在右侧
+        labels: {
+          font: {
+            size: 14 // 设置图例字体大小
+          }
+        }
+      },
+    },
   };
   public pieChartLabels: Label[] = [];
   public pieChartData: number[] = [];
   public pieChartType: ChartType = 'pie';
+  public pieChartLegend = true;
 
   // public pieChartLabels: Label[] = [['Series A'], ['Series B']];
   // public pieChartData: SingleDataSet = [300, 500,600];

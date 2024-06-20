@@ -9,12 +9,14 @@
     <input type="date" id="endDateForPie" [(ngModel)]="endDateForPie" (change)="onDateRangeChangeForPie()">
   </div>
 
-<div style="display: block;" style="width: 300px; height: 300px;">
+<!-- <div style="display: block;" style="width: 300px; height: 300px;"></div> -->
+<div style="display: block;" style="width: 500px; height: 300px;">
     <canvas baseChart
             [data]="pieChartData"
             [labels]="pieChartLabels"
             [chartType]="pieChartType"
-            [options]="pieChartOptions">
+            [options]="pieChartOptions"
+            [legend]="pieChartLegend">
     </canvas>
 </div>
 
