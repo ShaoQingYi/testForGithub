@@ -89,7 +89,9 @@ export class ChartDataService {
    calculateDailyCostsForC(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
     return dateArray.map(date => {
       return transactions
-        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == AppConstants.PAYMETHOD_C)
+        .filter(transaction => transaction.writeTime === date &&
+           !transaction.inOrOut && 
+           (transaction.payMethod != AppConstants.PAYMETHOD_J && transaction.payMethod != AppConstants.PAYMETHOD_JCB))
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
@@ -161,7 +163,9 @@ export class ChartDataService {
   calculateMonthlyCostsForC(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
     return monthArray.map(month => {
       return transactions
-        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == AppConstants.PAYMETHOD_C)
+        .filter(transaction => transaction.writeTime.startsWith(month) &&
+         !transaction.inOrOut  && 
+        (transaction.payMethod != AppConstants.PAYMETHOD_J && transaction.payMethod != AppConstants.PAYMETHOD_JCB))
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
