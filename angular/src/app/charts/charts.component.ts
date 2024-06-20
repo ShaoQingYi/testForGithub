@@ -243,7 +243,7 @@ export class ChartsComponent {
             type: 'category',
             scaleLabel: {
               display: true,
-              labelString: 'Month'
+              labelString: '日期'
             },
             ticks: {
               beginAtZero: true
@@ -253,7 +253,7 @@ export class ChartsComponent {
             type: 'linear',
             scaleLabel: {
               display: true,
-              labelString: 'Value'
+              labelString: '花费总额'
             },
             ticks: {
               beginAtZero: true
@@ -318,7 +318,7 @@ export class ChartsComponent {
             type: 'category',
             scaleLabel: {
               display: true,
-              labelString: 'Category'
+              labelString: '年月'
             },
             ticks: {
               beginAtZero: true
@@ -328,7 +328,7 @@ export class ChartsComponent {
             type: 'linear',
             scaleLabel: {
               display: true,
-              labelString: 'Amount'
+              labelString: '花费总额'
             },
             ticks: {
               beginAtZero: true

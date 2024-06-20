@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { mockData } from './mockData';
 import { MoneyDetailEntity } from './MoneyDetailEntity';
+import { AppConstants } from './AppConstants';
 
 @Injectable({
   providedIn: 'root'
@@ -70,7 +71,7 @@ export class ChartDataService {
   calculateDailyCostsForJ(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
     return dateArray.map(date => {
       return transactions
-        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == 'j现金')
+        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == AppConstants.PAYMETHOD_J)
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
@@ -79,7 +80,7 @@ export class ChartDataService {
    calculateDailyCostsForJCB(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
     return dateArray.map(date => {
       return transactions
-        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == 'jcb')
+        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == AppConstants.PAYMETHOD_JCB)
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
@@ -88,7 +89,7 @@ export class ChartDataService {
    calculateDailyCostsForC(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
     return dateArray.map(date => {
       return transactions
-        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == 'c现金')
+        .filter(transaction => transaction.writeTime === date && !transaction.inOrOut && transaction.payMethod == AppConstants.PAYMETHOD_C)
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
@@ -142,7 +143,7 @@ export class ChartDataService {
   calculateMonthlyCostsForJ(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
     return monthArray.map(month => {
       return transactions
-        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == 'j现金')
+        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == AppConstants.PAYMETHOD_J)
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
@@ -151,7 +152,7 @@ export class ChartDataService {
   calculateMonthlyCostsForJCB(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
     return monthArray.map(month => {
       return transactions
-        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == 'jcb')
+        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == AppConstants.PAYMETHOD_JCB)
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
@@ -160,7 +161,7 @@ export class ChartDataService {
   calculateMonthlyCostsForC(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
     return monthArray.map(month => {
       return transactions
-        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == 'c现金')
+        .filter(transaction => transaction.writeTime.startsWith(month) && !transaction.inOrOut  && transaction.payMethod == AppConstants.PAYMETHOD_C)
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
@@ -201,7 +202,8 @@ export class ChartDataService {
 
         // 0620
         // 如果是国内支付方式的场合，支付金额*20
-        if (transaction.payMethod != 'j现金' && transaction.payMethod != 'jcb') {
+        if (transaction.payMethod != AppConstants.PAYMETHOD_J && 
+          transaction.payMethod != AppConstants.PAYMETHOD_JCB) {
           categoryCosts[transaction.costType] += transaction.costMoney * 20;
         } else {
           categoryCosts[transaction.costType] += transaction.costMoney;
