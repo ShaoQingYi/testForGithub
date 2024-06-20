@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 // import * as Chart from 'chart.js';
-import { ChartType, ChartOptions,Chart } from 'chart.js';
+import { ChartType, ChartOptions,Chart, ChartDataSets, ChartTooltipItem } from 'chart.js';
 import { Label, SingleDataSet } from 'ng2-charts';
 
 import { ChartDataService } from '../chart-data.service';
@@ -54,9 +54,19 @@ export class ChartsComponent {
 
   lableDayForChart: any[] = [];
   dataDayForChart: number[] = [];
+  // 0620
+  dataDayForChart_j: number[] = [];
+  dataDayForChart_jcb: number[] = [];
+  dataDayForChart_c: number[] = [];
+  // 0620
 
   lableMonthForChart: any[] = [];
   dataMonthForChart: number[] = [];
+  // 0620
+  dataMonthForChart_j: number[] = [];
+  dataMonthForChart_jcb: number[] = [];
+  dataMonthForChart_c: number[] = [];
+  // 0620
 
   startDate: string = '';
   dateRange: number = 7;
@@ -69,6 +79,33 @@ export class ChartsComponent {
   
   public pieChartOptions: ChartOptions = {
     responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right', // 设置图例显示在右侧
+        labels: {
+          font: {
+            size: 14 // 设置图例字体大小
+          }
+        }
+      },
+    },
+    tooltips: {
+      callbacks: {
+        label: (tooltipItem :ChartTooltipItem, data) => {
+          const dataset = data.datasets![tooltipItem.datasetIndex!] as ChartDataSets;
+          var total = (dataset.data as number[]).reduce(function(previousValue: any, currentValue: any, currentIndex: any, array: any) {
+            return previousValue + currentValue;
+          });
+          var currentValue = dataset.data![tooltipItem.index!] as number;
+          var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+          
+          const label = data.labels![tooltipItem.index!] as string;
+
+          return `${label}:` + currentValue + ' (' + percentage + '%)';
+        }
+      }
+    }
   };
   public pieChartLabels: Label[] = [];
   public pieChartData: number[] = [];
@@ -169,13 +206,27 @@ export class ChartsComponent {
 
   updateDailyCosts() {
     this.lableDayForChart = this.chartDataService.get7DaysFrom(this.startDate,this.dateRange);
-    this.dataDayForChart = this.chartDataService.calculateDailyCosts(this.moneyDetails,this.lableDayForChart);
+    // this.dataDayForChart = this.chartDataService.calculateDailyCosts(this.moneyDetails,this.lableDayForChart);
+
+    // 0620
+    this.dataDayForChart_j = this.chartDataService.calculateDailyCostsForJ(this.moneyDetails,this.lableDayForChart);
+    this.dataDayForChart_jcb = this.chartDataService.calculateDailyCostsForJCB(this.moneyDetails,this.lableDayForChart);
+    this.dataDayForChart_c = this.chartDataService.calculateDailyCostsForC(this.moneyDetails,this.lableDayForChart);
+    // 0620
+
     this.createChart();
   }
 
   updateMonthlyCosts() {
     this.lableMonthForChart = this.chartDataService.get12MonthsFrom(this.startDate,this.monthRange);
-    this.dataMonthForChart = this.chartDataService.calculateMonthlyCosts(this.moneyDetails,this.lableMonthForChart);
+    // this.dataMonthForChart = this.chartDataService.calculateMonthlyCosts(this.moneyDetails,this.lableMonthForChart);
+
+    // 0620
+    this.dataMonthForChart_j = this.chartDataService.calculateMonthlyCostsForJ(this.moneyDetails,this.lableMonthForChart);
+    this.dataMonthForChart_jcb = this.chartDataService.calculateMonthlyCostsForJCB(this.moneyDetails,this.lableMonthForChart);
+    this.dataMonthForChart_c = this.chartDataService.calculateMonthlyCostsForC(this.moneyDetails,this.lableMonthForChart);
+    // 0620
+
     this.createChart2();
   }
 
@@ -188,10 +239,26 @@ export class ChartsComponent {
         labels: this.lableDayForChart,
         datasets: [
           {
-            label: '指定日期内每日花销合计',
+            label: '日本现金花销合计（日别）',
             // data: [30, 45, 28, 80, 99, 43, 70],
-            data: this.dataDayForChart,
-            borderColor: this.chartDataService.generateColors(this.dataDayForChart.length),
+            // data: this.dataDayForChart,
+            data: this.dataDayForChart_j,
+            // borderColor: this.chartDataService.generateColors(this.dataDayForChart.length),
+            borderColor: 'rgba(255, 206, 86, 1)',
+            fill: false
+          },
+          {
+            label: 'JCB花销合计（日别）',
+            // data: [30, 45, 28, 80, 99, 43, 70],
+            data: this.dataDayForChart_jcb,
+            borderColor: 'rgba(54, 162, 235, 1)',
+            fill: false
+          },
+          {
+            label: '国内花销合计（日别）',
+            // data: [30, 45, 28, 80, 99, 43, 70],
+            data: this.dataDayForChart_c,
+            borderColor: 'rgba(153, 102, 255, 1)',
             fill: false
           }
           // ,
@@ -211,12 +278,25 @@ export class ChartsComponent {
       },
       options: {
         responsive: true,
+        plugins: {
+          tooltip: {
+            enabled: false // 禁用 tooltips
+          },
+          zoom: {
+            pan: {
+              enabled: false, // 禁用平移
+            },
+            zoom: {
+              enabled: false // 禁用缩放
+            }
+          }
+        },
         scales: {
           xAxes: [{
             type: 'category',
             scaleLabel: {
               display: true,
-              labelString: 'Month'
+              labelString: '日期'
             },
             ticks: {
               beginAtZero: true
@@ -226,7 +306,7 @@ export class ChartsComponent {
             type: 'linear',
             scaleLabel: {
               display: true,
-              labelString: 'Value'
+              labelString: '花费总额'
             },
             ticks: {
               beginAtZero: true
@@ -246,50 +326,52 @@ export class ChartsComponent {
         labels: this.lableMonthForChart,
         datasets: [
           {
-            label: '12月内花销合计1',
+            label: '日本现金花销合计（月别）',
             // data: [1200, 500, 300, 200, 400],
-            data: this.dataMonthForChart,
-            backgroundColor: this.chartDataService.generateColors(this.dataMonthForChart.length),
-            // borderColor: [
-            //   'rgba(255, 99, 132, 1)',
-            //   'rgba(54, 162, 235, 1)',
-            //   'rgba(255, 206, 86, 1)',
-            //   'rgba(75, 192, 192, 1)',
-            //   'rgba(153, 102, 255, 1)'
-            // ],
+            data: this.dataMonthForChart_j,
+            backgroundColor:'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
             borderWidth: 1
           },
           {
-            label: '12月内花销合计2',
+            label: 'JCB花销合计（月别）',
             // data: [1200, 500, 300, 200, 400],
-            data: this.dataMonthForChart,
-            backgroundColor: this.chartDataService.generateColors(this.dataMonthForChart.length),
-            // backgroundColor: [
-            //   'rgba(255, 99, 132, 0.2)',
-            //   'rgba(54, 162, 235, 0.2)',
-            //   'rgba(255, 206, 86, 0.2)',
-            //   'rgba(75, 192, 192, 0.2)',
-            //   'rgba(153, 102, 255, 0.2)'
-            // ],
-            // borderColor: [
-            //   'rgba(255, 99, 132, 1)',
-            //   'rgba(54, 162, 235, 1)',
-            //   'rgba(255, 206, 86, 1)',
-            //   'rgba(75, 192, 192, 1)',
-            //   'rgba(153, 102, 255, 1)'
-            // ],
+            data: this.dataMonthForChart_jcb,
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          },
+          {
+            label: '国内花销合计（月别）',
+            // data: [1200, 500, 300, 200, 400],
+            data: this.dataMonthForChart_c,
+            backgroundColor: 'rgba(255, 206, 86, 0.2)',
+            borderColor: 'rgba(255, 206, 86, 1)',
             borderWidth: 1
           }
         ]
       },
       options: {
         responsive: true,
+        plugins: {
+          tooltip: {
+            enabled: false // 禁用 tooltips
+          },
+          zoom: {
+            pan: {
+              enabled: false, // 禁用平移
+            },
+            zoom: {
+              enabled: false // 禁用缩放
+            }
+          }
+        },
         scales: {
           xAxes: [{
             type: 'category',
             scaleLabel: {
               display: true,
-              labelString: 'Category'
+              labelString: '年月'
             },
             ticks: {
               beginAtZero: true
@@ -299,7 +381,7 @@ export class ChartsComponent {
             type: 'linear',
             scaleLabel: {
               display: true,
-              labelString: 'Amount'
+              labelString: '花费总额'
             },
             ticks: {
               beginAtZero: true

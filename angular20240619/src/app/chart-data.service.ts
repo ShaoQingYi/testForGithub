@@ -5,6 +5,8 @@ import { MoneyDetailEntity } from './MoneyDetailEntity';
 import { HttpClient } from '@angular/common/http';
 import { MoneyDetailsFromSpringboot } from './MoneyDetailsFromSpringboot';
 import { serverUrl } from './serverUrl';
+import { AppConstants } from './AppConstants';
+
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +76,8 @@ export class ChartDataService {
     const monthArray: string[] = [];
 
     for (let i = 0; i < months; i++) {
-      const currentDate = new Date(date);
+      // const currentDate = new Date(date); //设置月末时有bug
+      const currentDate = new Date(date.getFullYear(),date.getMonth(),1);
       currentDate.setMonth(date.getMonth() - i);
       const formattedDate = this.formatMonth(currentDate);
       monthArray.push(formattedDate);
@@ -90,19 +93,65 @@ export class ChartDataService {
   }
 
   // 根据传入的日期数组，算出对应日期的花费累计
-  calculateDailyCosts(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
+  calculateDailyCostsForJ(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
     return dateArray.map(date => {
       return transactions
-        .filter(transaction => transaction.writeTime === date && transaction.inOrOut)
+        .filter(transaction => transaction.writeTime === date && transaction.inOrOut
+          && transaction.payMethod == AppConstants.PAYMETHOD_J
+        )
+        .reduce((sum, transaction) => sum + transaction.costMoney, 0);
+    });
+  }
+
+  // 根据传入的日期数组，算出对应日期的花费累计
+  calculateDailyCostsForJCB(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
+    return dateArray.map(date => {
+      return transactions
+        .filter(transaction => transaction.writeTime === date && transaction.inOrOut
+          && transaction.payMethod == AppConstants.PAYMETHOD_JCB
+        )
+        .reduce((sum, transaction) => sum + transaction.costMoney, 0);
+    });
+  }
+
+  // 根据传入的日期数组，算出对应日期的花费累计
+  calculateDailyCostsForC(transactions: MoneyDetailEntity[], dateArray: string[]): number[] {
+    return dateArray.map(date => {
+      return transactions
+        .filter(transaction => transaction.writeTime === date && transaction.inOrOut
+          && 
+          (transaction.payMethod != AppConstants.PAYMETHOD_J && transaction.payMethod != AppConstants.PAYMETHOD_JCB)
+        )
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
 
   // 根据传入的日期数组，算出对应月份的花费累计
-  calculateMonthlyCosts(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
+  calculateMonthlyCostsForJ(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
     return monthArray.map(month => {
       return transactions
-        .filter(transaction => transaction.writeTime.startsWith(month) && transaction.inOrOut)
+        .filter(transaction => transaction.writeTime.startsWith(month) && transaction.inOrOut
+        && transaction.payMethod == AppConstants.PAYMETHOD_J)
+        .reduce((sum, transaction) => sum + transaction.costMoney, 0);
+    });
+  }
+
+  // 根据传入的日期数组，算出对应月份的花费累计
+  calculateMonthlyCostsForJCB(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
+    return monthArray.map(month => {
+      return transactions
+        .filter(transaction => transaction.writeTime.startsWith(month) && transaction.inOrOut
+        && transaction.payMethod == AppConstants.PAYMETHOD_JCB)
+        .reduce((sum, transaction) => sum + transaction.costMoney, 0);
+    });
+  }
+
+  // 根据传入的日期数组，算出对应月份的花费累计
+  calculateMonthlyCostsForC(transactions: MoneyDetailEntity[], monthArray: string[]): number[] {
+    return monthArray.map(month => {
+      return transactions
+        .filter(transaction => transaction.writeTime.startsWith(month) && transaction.inOrOut  && 
+        (transaction.payMethod != AppConstants.PAYMETHOD_J && transaction.payMethod != AppConstants.PAYMETHOD_JCB))
         .reduce((sum, transaction) => sum + transaction.costMoney, 0);
     });
   }
@@ -138,7 +187,18 @@ export class ChartDataService {
         if (!categoryCosts[transaction.costType]) {
           categoryCosts[transaction.costType] = 0;
         }
-        categoryCosts[transaction.costType] += transaction.costMoney;
+
+        // 0620
+        // 如果是国内支付方式的场合，支付金额*20
+        if (transaction.payMethod != AppConstants.PAYMETHOD_J && 
+          transaction.payMethod != AppConstants.PAYMETHOD_JCB) {
+          categoryCosts[transaction.costType] += transaction.costMoney * 20;
+        } else {
+          categoryCosts[transaction.costType] += transaction.costMoney;
+        }
+        // 0620
+
+        // categoryCosts[transaction.costType] += transaction.costMoney;
       });
 
     return categoryCosts;

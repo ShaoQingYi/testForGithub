@@ -11,29 +11,29 @@ import { LoginComponent } from './login/login.component';
 
 import { AuthGuard } from './login/AuthGuard';
 
-// const routes: Routes = [
-//   { path: '', redirectTo: '/login', pathMatch: 'full' },
-//   { path: 'login', component: LoginComponent },
-//   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
-//   { path: 'moneyDetail', component: MoneyDetailComponent, canActivate: [AuthGuard]},
-//   { path: 'moneyDetailInfo', component: MoneyDetailInfoComponent, canActivate: [AuthGuard]},
-//   { path: 'charts', component: ChartsComponent, canActivate: [AuthGuard]},
-//   { path: 'excelBatch', component: MoneyDetailBatchComponent, canActivate: [AuthGuard]},
-//   { path: 'moneyDetail/moneyDetailInfo', component: MoneyDetailInfoComponent, canActivate: [AuthGuard]},
-//   { path: 'moneyDetailedit/:id', component: MoneyDetailEditComponent, canActivate: [AuthGuard]},
-// ];
-
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent},
-  { path: 'moneyDetail', component: MoneyDetailComponent},
-  { path: 'moneyDetailInfo', component: MoneyDetailInfoComponent},
-  { path: 'charts', component: ChartsComponent},
-  { path: 'excelBatch', component: MoneyDetailBatchComponent},
-  { path: 'moneyDetail/moneyDetailInfo', component: MoneyDetailInfoComponent},
-  { path: 'moneyDetailedit/:id', component: MoneyDetailEditComponent},
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard]},
+  { path: 'moneyDetail', component: MoneyDetailComponent, canActivate: [AuthGuard]},
+  { path: 'moneyDetailInfo', component: MoneyDetailInfoComponent, canActivate: [AuthGuard]},
+  { path: 'charts', component: ChartsComponent, canActivate: [AuthGuard]},
+  { path: 'excelBatch', component: MoneyDetailBatchComponent, canActivate: [AuthGuard]},
+  { path: 'moneyDetail/moneyDetailInfo', component: MoneyDetailInfoComponent, canActivate: [AuthGuard]},
+  { path: 'moneyDetailedit/:id', component: MoneyDetailEditComponent, canActivate: [AuthGuard]},
 ];
+
+// const routes: Routes = [
+//   { path: '', redirectTo: '/login', pathMatch: 'full' },
+//   { path: 'login', component: LoginComponent },
+//   { path: 'dashboard', component: DashboardComponent},
+//   { path: 'moneyDetail', component: MoneyDetailComponent},
+//   { path: 'moneyDetailInfo', component: MoneyDetailInfoComponent},
+//   { path: 'charts', component: ChartsComponent},
+//   { path: 'excelBatch', component: MoneyDetailBatchComponent},
+//   { path: 'moneyDetail/moneyDetailInfo', component: MoneyDetailInfoComponent},
+//   { path: 'moneyDetailedit/:id', component: MoneyDetailEditComponent},
+// ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
