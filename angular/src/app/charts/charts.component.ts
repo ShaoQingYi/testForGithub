@@ -101,7 +101,10 @@ export class ChartsComponent {
           });
           var currentValue = dataset.data![tooltipItem.index!] as number;
           var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
-          return currentValue + ' (' + percentage + '%)';
+          
+          const label = data.labels![tooltipItem.index!] as string;
+
+          return `${label}:` + currentValue + ' (' + percentage + '%)';
         }
       }
     }
