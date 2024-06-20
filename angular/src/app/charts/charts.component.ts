@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 // import * as Chart from 'chart.js';
-import { ChartType, ChartOptions,Chart } from 'chart.js';
+import { ChartType, ChartOptions,Chart, ChartTooltipItem, ChartDataSets } from 'chart.js';
 import { Label, SingleDataSet } from 'ng2-charts';
 
 import { ChartDataService } from '../chart-data.service';
@@ -92,6 +92,19 @@ export class ChartsComponent {
         }
       },
     },
+    tooltips: {
+      callbacks: {
+        label: (tooltipItem :ChartTooltipItem, data) => {
+          const dataset = data.datasets![tooltipItem.datasetIndex!] as ChartDataSets;
+          var total = (dataset.data as number[]).reduce(function(previousValue: any, currentValue: any, currentIndex: any, array: any) {
+            return previousValue + currentValue;
+          });
+          var currentValue = dataset.data![tooltipItem.index!] as number;
+          var percentage = Math.floor(((currentValue / total) * 100) + 0.5);
+          return currentValue + ' (' + percentage + '%)';
+        }
+      }
+    }
   };
   public pieChartLabels: Label[] = [];
   public pieChartData: number[] = [];
